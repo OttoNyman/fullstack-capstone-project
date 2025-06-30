@@ -10,7 +10,7 @@ function RegisterPage() {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [showerr, setShowerr] = useState("");
+	const [setShowerr] = useState("");
 	const navigate = useNavigate();
 	const { setIsLoggedIn } = useAppContext();
 
@@ -49,7 +49,6 @@ function RegisterPage() {
 				setShowerr(json.error);
 			}
 			// Task 6: Display error message to enduser.
-			
 		} catch (e) {
 			console.log("Error fetching details: " + e.message);
 		}
