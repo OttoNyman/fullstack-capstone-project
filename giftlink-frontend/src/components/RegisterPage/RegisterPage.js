@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { urlConfig } from "../../config";
+import { useAppContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 import "./RegisterPage.css";
 
@@ -7,9 +10,49 @@ function RegisterPage() {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showerr, setShowerr] = useState("");
+	const navigate = useNavigate();
+	const { setIsLoggedIn } = useAppContext();
 
 	const handleRegister = async () => {
 		console.log("Register invoked");
+		try {
+			const response = await fetch(
+				`${urlConfig.backendUrl}/api/auth/register`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						firstName,
+						lastName,
+						email,
+						password,
+					}),
+				}
+			);
+			// Task 1: Access data coming from fetch API
+			const json = await response.json();
+			// Task 2: Set user details
+			if (json.authtoken) {
+				sessionStorage.setItem("auth-token", json.authtoken);
+				sessionStorage.setItem("name", firstName);
+				sessionStorage.setItem("email", json.email);
+				//insert code for setting logged in state
+				setIsLoggedIn(true);
+				//insert code for navigating to MainPAge
+				navigate("/app");
+			}
+			// Task 5: Set an error message if the registration fails.
+			if (json.error) {
+				setShowerr(json.error);
+			}
+			// Task 6: Display error message to enduser.
+			
+		} catch (e) {
+			console.log("Error fetching details: " + e.message);
+		}
 	};
 
 	return (
